@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application
+        android:name="manuelklyukvin.contacts_app.app.di.App"
+        android:enableOnBackInvokedCallback="true"
+        android:icon="@mipmap/icon"
+        android:label="@string/app_name"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="35">
+        <activity
+            android:name="manuelklyukvin.contacts_app.app.ui.screens.AppActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ContactsApp.SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
