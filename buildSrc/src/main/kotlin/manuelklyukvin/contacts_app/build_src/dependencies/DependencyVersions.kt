@@ -21,6 +21,5 @@ internal object DependencyVersions {
 
     const val PERMISSIONS = "0.37.3"
 
-    const val JUNIT = "5.12.2"
     const val MOCKK = "1.14.2"
 }

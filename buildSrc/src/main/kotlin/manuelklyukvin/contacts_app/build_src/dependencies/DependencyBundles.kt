@@ -3,6 +3,7 @@ package manuelklyukvin.contacts_app.build_src.dependencies
 import manuelklyukvin.contacts_app.build_src.utils.implementation
 import manuelklyukvin.contacts_app.build_src.utils.testImplementation
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.kotlin.dsl.kotlin
 
 fun DependencyHandler.androidx() {
     implementation(Dependencies.CORE_KTX)
@@ -35,6 +36,7 @@ fun DependencyHandler.splashScreen() = implementation(Dependencies.SPLASH_SCREEN
 fun DependencyHandler.permissions() = implementation(Dependencies.PERMISSIONS)
 
 fun DependencyHandler.testing() {
-    testImplementation(Dependencies.JUNIT)
+    testImplementation(kotlin("test"))
+    testImplementation(Dependencies.COROUTINES_TEST)
     testImplementation(Dependencies.MOCKK)
 }

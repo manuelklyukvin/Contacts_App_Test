@@ -27,6 +27,6 @@ internal object Dependencies {
 
     const val PERMISSIONS = "com.google.accompanist:accompanist-permissions:${DependencyVersions.PERMISSIONS}"
 
-    const val JUNIT = "org.junit.jupiter:junit-jupiter-api:${DependencyVersions.JUNIT}"
     const val MOCKK = "io.mockk:mockk:${DependencyVersions.MOCKK}"
+    const val COROUTINES_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${DependencyVersions.COROUTINES}"
 }

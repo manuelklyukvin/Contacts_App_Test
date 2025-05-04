@@ -12,17 +12,18 @@ class GetContactsUseCase(
     private val formatPhoneNumberUseCase: FormatPhoneNumberUseCase,
     private val sortContactsUseCase: SortContactsUseCase
 ) {
-    suspend operator fun invoke() = try {
+    suspend operator fun invoke(): OperationResult<List<DomainContact>, String?> = try {
         withContext(Dispatchers.IO) {
             val rawContacts = contactRepository.getRawContacts()
 
             val contacts = rawContacts.mapNotNull { contact ->
-                formatPhoneNumberUseCase(contact.rawPhoneNumber)?.let { formattedPhoneNumber ->
-                    DomainContact(
+                when (val formatPhoneNumberResult = formatPhoneNumberUseCase(contact.rawPhoneNumber)) {
+                    is OperationResult.Success -> DomainContact(
                         photoUri = contact.photoUri,
                         name = contact.name,
-                        phoneNumber = formattedPhoneNumber
+                        phoneNumber = formatPhoneNumberResult.data
                     )
+                    is OperationResult.Error -> null
                 }
             }
 
@@ -32,6 +33,6 @@ class GetContactsUseCase(
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
-        OperationResult.Error(e.localizedMessage)
+        OperationResult.Error(e.message)
     }
 }
