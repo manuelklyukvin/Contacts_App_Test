@@ -1,7 +1,7 @@
 package manuelklyukvin.contacts_app.main.repositories
 
-import manuelklyukvin.contacts_app.main.models.DomainContact
+import manuelklyukvin.contacts_app.main.models.DomainRawContact
 
 interface ContactRepository {
-    suspend fun getContacts(): List<DomainContact>
+    suspend fun getRawContacts(): List<DomainRawContact>
 }

@@ -1,4 +1,5 @@
 import manuelklyukvin.contacts_app.build_src.configs.GradleNamespaces
+import manuelklyukvin.contacts_app.build_src.dependencies.permissions
 import manuelklyukvin.contacts_app.build_src.gradle_plugins.PresentationGradlePlugin
 import manuelklyukvin.contacts_app.build_src.modules.mainDomain
 
@@ -14,5 +15,6 @@ android {
 }
 
 dependencies {
+    permissions()
     mainDomain()
 }

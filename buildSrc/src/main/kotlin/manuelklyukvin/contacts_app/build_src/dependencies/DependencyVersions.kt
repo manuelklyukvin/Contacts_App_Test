@@ -11,11 +11,16 @@ internal object DependencyVersions {
 
     const val SERIALIZATION = "1.8.1"
 
-    const val NAVIGATION_COMPOSE = "2.8.9"
+    const val NAVIGATION = "2.8.9"
 
     const val COROUTINES = "1.10.2"
 
     const val COIL = "2.7.0"
 
     const val SPLASH_SCREEN = "1.2.0-beta01"
+
+    const val PERMISSIONS = "0.37.3"
+
+    const val JUNIT = "5.12.2"
+    const val MOCKK = "1.14.2"
 }

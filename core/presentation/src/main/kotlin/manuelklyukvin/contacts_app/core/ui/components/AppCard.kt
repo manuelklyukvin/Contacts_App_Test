@@ -28,7 +28,11 @@ fun AppCard(
                 shape = AppTheme.shapes.roundedCornerShape
             )
             .let {
-                if (areDefaultPaddingsEnabled) it.padding(AppTheme.shapes.paddingMedium) else it
+                if (areDefaultPaddingsEnabled) {
+                    it.padding(AppTheme.shapes.paddingMedium)
+                } else {
+                    it
+                }
             },
         verticalArrangement = verticalArrangement,
         horizontalAlignment = horizontalAlignment,

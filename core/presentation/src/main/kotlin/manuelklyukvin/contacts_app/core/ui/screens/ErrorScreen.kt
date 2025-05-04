@@ -1,6 +1,7 @@
 package manuelklyukvin.contacts_app.core.ui.screens
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,8 @@ import manuelklyukvin.contacts_app.core.ui.theme.AppTheme
 
 @Composable
 fun ErrorScreen(error: String?, onRetryButtonClicked: () -> Unit) {
+    error?.let { Log.e("ErrorScreen", error) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

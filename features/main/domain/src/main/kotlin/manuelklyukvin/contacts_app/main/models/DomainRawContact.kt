@@ -1,7 +1,7 @@
 package manuelklyukvin.contacts_app.main.models
 
-data class DomainContact(
+data class DomainRawContact(
     val photoUri: String?,
     val name: String,
-    val phoneNumber: String
+    val rawPhoneNumber: String
 )

@@ -17,6 +17,9 @@ android {
     namespace = GradleNamespaces.CORE
     compileSdk = GradleVersions.COMPILE_SDK
 
+    defaultConfig {
+        minSdk = GradleVersions.MIN_SDK
+    }
     buildTypes {
         release {
             isMinifyEnabled = true

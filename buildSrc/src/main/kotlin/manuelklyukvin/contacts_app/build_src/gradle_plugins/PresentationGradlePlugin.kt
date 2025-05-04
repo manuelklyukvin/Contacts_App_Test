@@ -22,6 +22,9 @@ class PresentationGradlePlugin : CoreGradlePlugin() {
         project.android().apply {
             compileSdk = GradleVersions.COMPILE_SDK
 
+            defaultConfig {
+                minSdk = GradleVersions.MIN_SDK
+            }
             buildTypes {
                 release {
                     isMinifyEnabled = true

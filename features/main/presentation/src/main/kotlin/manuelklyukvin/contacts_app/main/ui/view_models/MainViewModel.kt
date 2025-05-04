@@ -18,7 +18,7 @@ class MainViewModel(
 
     override fun onIntent(intent: MainIntent) = when (intent) {
         MainIntent.OnScreenOpened -> onScreenOpened()
-        MainIntent.OnContactClicked -> onContactClicked()
+        is MainIntent.OnContactClicked -> onContactClicked(intent.phoneNumber)
         MainIntent.OnRetryButtonClicked -> onRetryButtonClicked()
     }
 
@@ -36,10 +36,7 @@ class MainViewModel(
                     )
                 }
                 is OperationResult.Error -> reduce {
-                    copy(
-                        viewState = CoreViewState.ERROR,
-                        error = getContactsResult.error
-                    )
+                    copy(viewState = CoreViewState.ERROR, error = getContactsResult.error)
                 }
             }
         }
@@ -47,7 +44,7 @@ class MainViewModel(
 
     private fun onScreenOpened() = withInitialState { loadContacts() }
 
-    private fun onContactClicked() = withContentState { }
+    private fun onContactClicked(phoneNumber: String) = withContentState { }
 
     private fun onRetryButtonClicked() = withErrorState { loadContacts() }
 
