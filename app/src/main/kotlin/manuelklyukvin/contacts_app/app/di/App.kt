@@ -4,6 +4,7 @@ import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.request.CachePolicy
+import manuelklyukvin.contacts_app.core.di.coreModule
 import manuelklyukvin.contacts_app.main.di.mainModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -13,7 +14,7 @@ class App : Application(), ImageLoaderFactory {
         super.onCreate()
         startKoin {
             androidContext(this@App)
-            modules(mainModule)
+            modules(coreModule, mainModule)
         }
     }
 

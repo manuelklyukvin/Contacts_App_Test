@@ -9,12 +9,12 @@ import manuelklyukvin.contacts_app.core.utils.operations.models.OperationResult
 import manuelklyukvin.contacts_app.main.models.toPresentation
 import manuelklyukvin.contacts_app.main.ui.view_models.models.MainIntent
 import manuelklyukvin.contacts_app.main.ui.view_models.models.MainState
-import manuelklyukvin.contacts_app.main.use_cases.GetContactsUseCase
+import manuelklyukvin.contacts_app.main.use_cases.GetContactGroupsUseCase
 
 class MainViewModel(
-    private val getContactsUseCase: GetContactsUseCase
+    private val getContactGroupsUseCase: GetContactGroupsUseCase
 ) : CoreViewModel<MainState, MainIntent>(MainState()) {
-    private var loadContactsJob: Job? = null
+    private var loadContactGroupsJob: Job? = null
 
     override fun onIntent(intent: MainIntent) = when (intent) {
         MainIntent.OnScreenOpened -> onScreenOpened()
@@ -22,34 +22,34 @@ class MainViewModel(
         MainIntent.OnRetryButtonClicked -> onRetryButtonClicked()
     }
 
-    private fun loadContacts() {
-        reduce { copy(viewState = CoreViewState.LOADING) }
-        loadContactsJob?.cancel()
+    private fun onScreenOpened() = withInitialState { loadContactGroups() }
 
-        loadContactsJob = viewModelScope.launch {
-            when (val getContactsResult = getContactsUseCase()) {
+    private fun onContactClicked(phoneNumber: String) = withContentState { }
+
+    private fun onRetryButtonClicked() = withErrorState { loadContactGroups() }
+
+    private fun loadContactGroups() {
+        reduce { copy(viewState = CoreViewState.LOADING) }
+        loadContactGroupsJob?.cancel()
+
+        loadContactGroupsJob = viewModelScope.launch {
+            when (val getContactGroupsResult = getContactGroupsUseCase()) {
                 is OperationResult.Success -> reduce {
                     copy(
                         viewState = CoreViewState.CONTENT,
-                        contacts = getContactsResult.data.map { it.toPresentation() },
+                        contactGroups = getContactGroupsResult.data.map { it.toPresentation() },
                         error = null
                     )
                 }
                 is OperationResult.Error -> reduce {
-                    copy(viewState = CoreViewState.ERROR, error = getContactsResult.error)
+                    copy(viewState = CoreViewState.ERROR, error = getContactGroupsResult.error)
                 }
             }
         }
     }
 
-    private fun onScreenOpened() = withInitialState { loadContacts() }
-
-    private fun onContactClicked(phoneNumber: String) = withContentState { }
-
-    private fun onRetryButtonClicked() = withErrorState { loadContacts() }
-
     override fun onCleared() {
         super.onCleared()
-        loadContactsJob?.cancel()
+        loadContactGroupsJob?.cancel()
     }
 }

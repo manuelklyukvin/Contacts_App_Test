@@ -1,38 +1,28 @@
 package manuelklyukvin.contacts_app.main.use_cases
 
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import manuelklyukvin.contacts_app.core.utils.operations.models.OperationResult
 import manuelklyukvin.contacts_app.main.models.DomainContact
-import manuelklyukvin.contacts_app.main.repositories.ContactRepository
+import manuelklyukvin.contacts_app.main.models.DomainRawContact
+import manuelklyukvin.contacts_app.main.repositories.RawContactRepository
 
 class GetContactsUseCase(
-    private val contactRepository: ContactRepository,
+    private val rawContactRepository: RawContactRepository,
     private val formatPhoneNumberUseCase: FormatPhoneNumberUseCase,
-    private val sortContactsUseCase: SortContactsUseCase
 ) {
-    suspend operator fun invoke(): OperationResult<List<DomainContact>, String?> = try {
-        withContext(Dispatchers.IO) {
-            val rawContacts = contactRepository.getRawContacts()
+    suspend operator fun invoke(): List<DomainContact> {
+        val rawContacts = rawContactRepository.getRawContacts()
+        return rawContacts.mapNotNull { formatRawContact(it) }
+    }
 
-            val contacts = rawContacts.mapNotNull { contact ->
-                when (val formatPhoneNumberResult = formatPhoneNumberUseCase(contact.rawPhoneNumber)) {
-                    is OperationResult.Success -> DomainContact(
-                        photoUri = contact.photoUri,
-                        name = contact.name,
-                        phoneNumber = formatPhoneNumberResult.data
-                    )
-                    is OperationResult.Error -> null
-                }
-            }
-
-            val sortedContacts = sortContactsUseCase(contacts)
-            OperationResult.Success(sortedContacts)
+    private fun formatRawContact(rawContact: DomainRawContact): DomainContact? {
+        if (rawContact.name.isBlank()) return null
+        return when (val formatPhoneNumberResult = formatPhoneNumberUseCase(rawContact.rawPhoneNumber)) {
+            is OperationResult.Success -> DomainContact(
+                photoUri = rawContact.photoUri,
+                name = rawContact.name.trim(),
+                phoneNumber = formatPhoneNumberResult.data
+            )
+            is OperationResult.Error -> null
         }
-    } catch (e: CancellationException) {
-        throw e
-    } catch (e: Exception) {
-        OperationResult.Error(e.message)
     }
 }

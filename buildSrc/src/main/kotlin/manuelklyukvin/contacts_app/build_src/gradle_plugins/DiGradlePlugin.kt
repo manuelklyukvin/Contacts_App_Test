@@ -2,6 +2,7 @@ package manuelklyukvin.contacts_app.build_src.gradle_plugins
 
 import manuelklyukvin.contacts_app.build_src.configs.GradleVersions
 import manuelklyukvin.contacts_app.build_src.dependencies.koin
+import manuelklyukvin.contacts_app.build_src.modules.coreDi
 import manuelklyukvin.contacts_app.build_src.modules.coreDomain
 import manuelklyukvin.contacts_app.build_src.modules.corePresentation
 import manuelklyukvin.contacts_app.build_src.plugins.Plugins
@@ -36,6 +37,7 @@ class DiGradlePlugin : CoreGradlePlugin() {
 
             corePresentation()
             coreDomain()
+            coreDi()
         }
     }
 

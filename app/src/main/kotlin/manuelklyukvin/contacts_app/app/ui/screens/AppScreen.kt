@@ -17,7 +17,11 @@ fun AppScreen() {
             modifier = Modifier.fillMaxSize(),
             color = AppTheme.colorScheme.background
         ) {
-            Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .systemBarsPadding()
+            ) {
                 AppNavGraph(mainScreen = { MainScreen() })
             }
         }

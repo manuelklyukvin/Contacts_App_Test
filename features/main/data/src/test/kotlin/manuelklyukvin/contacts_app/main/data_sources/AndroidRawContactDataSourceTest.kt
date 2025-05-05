@@ -8,36 +8,42 @@ import androidx.core.database.getStringOrNull
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class AndroidContactDataSourceTest {
+@OptIn(ExperimentalCoroutinesApi::class)
+class AndroidRawContactDataSourceTest {
     private val testDispatcher = StandardTestDispatcher()
 
     private lateinit var context: Context
     private lateinit var contentResolver: ContentResolver
     private lateinit var contactCursor: Cursor
     private lateinit var phoneNumberCursor: Cursor
-    private lateinit var dataSource: ContactDataSource
+    private lateinit var dataSource: RawContactDataSource
 
     @BeforeEach
     fun setup() {
+        Dispatchers.setMain(testDispatcher)
+
         context = mockk()
         contentResolver = mockk()
         contactCursor = mockk(relaxed = true)
         phoneNumberCursor = mockk(relaxed = true)
-
         every { context.contentResolver } returns contentResolver
-        dataSource = AndroidContactDataSource(context)
+        dataSource = AndroidRawContactDataSource(context)
     }
 
     @Test
-    fun `returns contact with primary phone number`() = runTest(testDispatcher) {
+    fun `should return contact with primary phone number`() = runTest {
         val contactId = "1"
         val name = "John Doe"
         val photoUri = "photo.jpg"
@@ -88,7 +94,7 @@ class AndroidContactDataSourceTest {
     }
 
     @Test
-    fun `returns empty list when no contacts`() = runTest(testDispatcher) {
+    fun `should return empty list when no contacts`() = runTest {
         every {
             contentResolver.query(
                 ContactsContract.Contacts.CONTENT_URI,
@@ -104,7 +110,7 @@ class AndroidContactDataSourceTest {
     }
 
     @Test
-    fun `skips contacts without phone numbers`() = runTest(testDispatcher) {
+    fun `should skip contacts without phone numbers`() = runTest {
         val contactId = "2"
         val name = "Jane Doe"
         val photoUri = null
@@ -146,6 +152,7 @@ class AndroidContactDataSourceTest {
 
     @AfterEach
     fun tearDown() {
+        Dispatchers.resetMain()
         unmockkAll()
     }
 }

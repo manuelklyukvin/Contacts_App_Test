@@ -4,7 +4,8 @@ include(":app")
 include(
     ":core",
     ":core:presentation",
-    ":core:domain"
+    ":core:domain",
+    ":core:di"
 )
 include(":features")
 

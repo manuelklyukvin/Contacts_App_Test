@@ -5,7 +5,7 @@ import android.provider.ContactsContract
 import androidx.core.database.getStringOrNull
 import manuelklyukvin.contacts_app.main.models.DataRawContact
 
-class AndroidContactDataSource(private val context: Context) : ContactDataSource {
+class AndroidRawContactDataSource(private val context: Context) : RawContactDataSource {
     override suspend fun getRawContacts(): List<DataRawContact> {
         val rawContactsMap = mutableMapOf<String, DataRawContact>()
 
@@ -57,11 +57,11 @@ class AndroidContactDataSource(private val context: Context) : ContactDataSource
             null
         )?.use { cursor ->
             val rawPhoneNumberIndex = cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)
-            val isPrimaryIndex = cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.IS_PRIMARY)
+            val isPhoneNumberPrimaryIndex = cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.IS_PRIMARY)
 
             while (cursor.moveToNext()) {
-                val isPrimary = cursor.getInt(isPrimaryIndex)
-                if (isPrimary == 1) {
+                val iPhoneNumbersPrimary = cursor.getInt(isPhoneNumberPrimaryIndex)
+                if (iPhoneNumbersPrimary == 1) {
                     primaryRawPhoneNumber = cursor.getString(rawPhoneNumberIndex)
                     break
                 }

@@ -6,22 +6,21 @@ class FormatPhoneNumberUseCase {
     operator fun invoke(rawPhoneNumber: String): OperationResult<String, String?> {
         val digits = rawPhoneNumber.filter { it.isDigit() }
 
-        if (digits.length < 10) return OperationResult.Error("Phone number must have minimum 10 digits")
-
         val (countryCode, nationalPhoneNumber) = when {
             digits.length == 10 && !digits.startsWith("8") && !digits.startsWith("7") -> "+1" to digits
             digits.length == 11 && digits.startsWith("8") -> "+7" to digits.drop(1)
             digits.length == 11 && digits.startsWith("7") -> "+7" to digits.drop(1)
             digits.length in 11..13 -> {
-                val codeLength = digits.length - 10
-                val code = digits.substring(0, codeLength)
-                val nationalPhoneNumber = digits.substring(codeLength)
+                val countryCodeLength = digits.length - 10
+                val countryCode = digits.substring(0, countryCodeLength)
+                val nationalPhoneNumber = digits.substring(countryCodeLength)
 
                 if (nationalPhoneNumber.length != 10) return OperationResult.Error("Invalid national phone number length")
 
-                "+$code" to nationalPhoneNumber
+                "+$countryCode" to nationalPhoneNumber
             }
-            else -> return OperationResult.Error("Invalid phone number format")
+            digits.isNotBlank() -> return OperationResult.Success(rawPhoneNumber)
+            else -> return OperationResult.Error("Invalid phone number")
         }
 
         val areaCode = nationalPhoneNumber.substring(0, 3)

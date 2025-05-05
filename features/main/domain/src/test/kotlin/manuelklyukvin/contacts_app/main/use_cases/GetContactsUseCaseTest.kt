@@ -3,43 +3,47 @@ package manuelklyukvin.contacts_app.main.use_cases
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.unmockkAll
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import manuelklyukvin.contacts_app.core.utils.operations.models.OperationResult
 import manuelklyukvin.contacts_app.main.models.DomainContact
 import manuelklyukvin.contacts_app.main.models.DomainRawContact
-import manuelklyukvin.contacts_app.main.repositories.ContactRepository
+import manuelklyukvin.contacts_app.main.repositories.RawContactRepository
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class GetContactsUseCaseTest {
     private val testDispatcher = StandardTestDispatcher()
 
-    private lateinit var contactRepository: ContactRepository
+    private lateinit var rawContactRepository: RawContactRepository
     private lateinit var formatPhoneNumberUseCase: FormatPhoneNumberUseCase
-    private lateinit var sortContactsUseCase: SortContactsUseCase
     private lateinit var getContactsUseCase: GetContactsUseCase
 
     @BeforeEach
     fun setup() {
-        contactRepository = mockk()
+        Dispatchers.setMain(testDispatcher)
+        rawContactRepository = mockk()
         formatPhoneNumberUseCase = mockk()
-        sortContactsUseCase = mockk()
-        getContactsUseCase = GetContactsUseCase(contactRepository, formatPhoneNumberUseCase, sortContactsUseCase)
+        getContactsUseCase = GetContactsUseCase(rawContactRepository, formatPhoneNumberUseCase)
     }
 
     @Test
-    fun `returns sorted and formatted contacts on success`() = runTest(testDispatcher) {
+    fun `should return sorted and formatted contacts on success`() = runTest {
         val rawContacts = listOf(
             DomainRawContact(null, "Alice", "89161234567"),
             DomainRawContact(null, "Bob", "+7 (916) 000-00-00")
         )
-        coEvery { contactRepository.getRawContacts() } returns rawContacts
-
+        coEvery { rawContactRepository.getRawContacts() } returns rawContacts
         every { formatPhoneNumberUseCase("89161234567") } returns OperationResult.Success("+7 (916) 123-45-67")
         every { formatPhoneNumberUseCase("+7 (916) 000-00-00") } returns OperationResult.Success("+7 (916) 000-00-00")
 
@@ -47,61 +51,59 @@ class GetContactsUseCaseTest {
             DomainContact(null, "Alice", "+7 (916) 123-45-67"),
             DomainContact(null, "Bob", "+7 (916) 000-00-00")
         )
-        every { sortContactsUseCase(any()) } returns expected
 
         val getContactsResult = getContactsUseCase()
-        assertTrue(getContactsResult is OperationResult.Success)
-        assertEquals(expected, getContactsResult.data)
+        assertEquals(expected, getContactsResult)
     }
 
     @Test
-    fun `skips contacts with invalid phone numbers`() = runTest(testDispatcher) {
+    fun `should skip contacts with invalid phone numbers`() = runTest {
         val rawContacts = listOf(
             DomainRawContact(null, "Alice", "bad-number"),
             DomainRawContact(null, "Bob", "89161234567")
         )
-        coEvery { contactRepository.getRawContacts() } returns rawContacts
-
+        coEvery { rawContactRepository.getRawContacts() } returns rawContacts
         every { formatPhoneNumberUseCase("bad-number") } returns OperationResult.Error("Error")
         every { formatPhoneNumberUseCase("89161234567") } returns OperationResult.Success("+7 (916) 123-45-67")
 
         val expected = listOf(DomainContact(null, "Bob", "+7 (916) 123-45-67"))
-        every { sortContactsUseCase(any()) } returns expected
 
         val getContactsResult = getContactsUseCase()
-        assertTrue(getContactsResult is OperationResult.Success)
-        assertEquals(expected, getContactsResult.data)
+        assertEquals(expected, getContactsResult)
     }
 
     @Test
-    fun `returns empty list when all contacts are invalid`() = runTest(testDispatcher) {
+    fun `should return empty list when all contacts are invalid`() = runTest {
         val rawContacts = listOf(
             DomainRawContact(null, "Alice", "invalid1"),
             DomainRawContact(null, "Bob", "invalid2")
         )
-        coEvery { contactRepository.getRawContacts() } returns rawContacts
-
+        coEvery { rawContactRepository.getRawContacts() } returns rawContacts
         every { formatPhoneNumberUseCase(any()) } returns OperationResult.Error("Error")
 
-        every { sortContactsUseCase(emptyList()) } returns emptyList()
-
         val getContactsResult = getContactsUseCase()
-        assertTrue(getContactsResult is OperationResult.Success)
-        assertEquals(emptyList(), getContactsResult.data)
+        assertEquals(emptyList(), getContactsResult)
     }
 
     @Test
-    fun `returns OperationResultError on repository exception`() = runTest(testDispatcher) {
-        coEvery { contactRepository.getRawContacts() } throws Exception("Error")
-
-        val getContactsResult = getContactsUseCase()
-        assertTrue(getContactsResult is OperationResult.Error)
-        assertEquals("Error", getContactsResult.error)
+    fun `should return OperationResultError on repository exception`() = runTest {
+        val errorMessage = "Error"
+        coEvery { rawContactRepository.getRawContacts() } throws Exception(errorMessage)
+        val getContactsResult = assertThrows<Exception> { getContactsUseCase() }
+        assertEquals(errorMessage, getContactsResult.message)
     }
 
     @Test
-    fun `cancels when CancellationException is thrown`() = runTest(testDispatcher) {
-        coEvery { contactRepository.getRawContacts() } throws CancellationException()
-        assertThrows<CancellationException> { getContactsUseCase() }
+    fun `should throw CancellationException`() = runTest {
+        val errorMessage = "Error"
+        coEvery { rawContactRepository.getRawContacts() } throws CancellationException(errorMessage)
+        val getContactsResult = assertThrows<CancellationException> { getContactsUseCase() }
+        assertEquals(errorMessage, getContactsResult.message)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        Dispatchers.resetMain()
+        unmockkAll()
     }
 }

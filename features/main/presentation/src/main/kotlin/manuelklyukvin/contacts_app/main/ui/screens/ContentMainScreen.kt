@@ -1,7 +1,7 @@
 package manuelklyukvin.contacts_app.main.ui.screens
 
 import android.content.res.Configuration
-import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,31 +26,58 @@ import manuelklyukvin.contacts_app.core.ui.components.images.AppIcon
 import manuelklyukvin.contacts_app.core.ui.components.images.AppImage
 import manuelklyukvin.contacts_app.core.ui.components.texts.AppLineText
 import manuelklyukvin.contacts_app.core.ui.theme.AppTheme
+import manuelklyukvin.contacts_app.core.ui.utils.noIndicationClickable
 import manuelklyukvin.contacts_app.main.R
 import manuelklyukvin.contacts_app.main.models.PresentationContact
+import manuelklyukvin.contacts_app.main.models.PresentationContactGroup
 import manuelklyukvin.contacts_app.main.ui.view_models.models.MainIntent
 import manuelklyukvin.contacts_app.main.ui.view_models.models.MainState
 
 @Composable
 internal fun ContentMainScreen(state: MainState, onIntent: (MainIntent) -> Unit) {
-    Log.d("MainScreen", state.contacts.toString())
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(AppTheme.shapes.screenPadding),
-        verticalArrangement = Arrangement.spacedBy(AppTheme.shapes.paddingSmall)
+            .padding(AppTheme.shapes.screenPadding)
+            .clip(AppTheme.shapes.roundedCornerShape),
+        verticalArrangement = Arrangement.spacedBy(AppTheme.shapes.screenPadding)
     ) {
-        items(state.contacts) { contact ->
-            ContactCard(contact)
+        items(state.contactGroups) { contactGroup ->
+            ContactGroup(contactGroup, onIntent)
         }
     }
 }
 
 @Composable
-private fun ContactCard(contact: PresentationContact) {
+private fun ContactGroup(contactGroup: PresentationContactGroup, onIntent: (MainIntent) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(AppTheme.shapes.paddingSmall)) {
+        AppLineText(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = AppTheme.colorScheme.secondary,
+                    shape = AppTheme.shapes.roundedCornerShape
+                )
+                .padding(
+                    vertical = AppTheme.shapes.paddingExtraSmall,
+                    horizontal = AppTheme.shapes.paddingSmall
+                ),
+            text = contactGroup.header.toString(),
+            style = AppTheme.typography.title,
+            color = AppTheme.colorScheme.onSecondary
+        )
+        contactGroup.contacts.forEach { contact ->
+            ContactCard(contact, onIntent)
+        }
+    }
+}
+
+@Composable
+private fun ContactCard(contact: PresentationContact, onIntent: (MainIntent) -> Unit) {
     AppCard(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .noIndicationClickable { onIntent(MainIntent.OnContactClicked(contact.phoneNumber)) },
         areDefaultPaddingsEnabled = true
     ) {
         Row(
@@ -106,11 +133,16 @@ private fun ContentMainScreenPreview() {
         ) {
             ContentMainScreen(
                 state = MainState(
-                    contacts = List(5) {
-                        PresentationContact(
-                            photoUri = null,
-                            name = "Name",
-                            phoneNumber = "+7 (900) 000-00-00"
+                    contactGroups = List(2) {
+                        PresentationContactGroup(
+                            header = 'N',
+                            contacts = List(3) {
+                                PresentationContact(
+                                    photoUri = null,
+                                    name = "Name",
+                                    phoneNumber = "+7 (900) 000-00-00"
+                                )
+                            }
                         )
                     }
                 ),

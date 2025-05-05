@@ -51,21 +51,21 @@ class FormatPhoneNumberUseCaseTest {
     }
 
     @Test
-    fun `should format formated US phone number with no code`() {
+    fun `should return already formated US phone number with no code`() {
         val formatPhoneNumberResult = formatPhoneNumberUseCase("(123) 456-78-90")
         assertTrue(formatPhoneNumberResult is OperationResult.Success)
         assertEquals("+1 (123) 456-78-90", (formatPhoneNumberResult as OperationResult.Success).data)
     }
 
     @Test
-    fun `should format formated US phone number with code`() {
+    fun `should return already formated US phone number with code`() {
         val formatPhoneNumberResult = formatPhoneNumberUseCase("1 (123) 456-78-90")
         assertTrue(formatPhoneNumberResult is OperationResult.Success)
         assertEquals("+1 (123) 456-78-90", (formatPhoneNumberResult as OperationResult.Success).data)
     }
 
     @Test
-    fun `should format formated US phone number with plus`() {
+    fun `should return already formated US phone number with plus`() {
         val formatPhoneNumberResult = formatPhoneNumberUseCase("+1 (123) 456-78-90")
         assertTrue(formatPhoneNumberResult is OperationResult.Success)
         assertEquals("+1 (123) 456-78-90", (formatPhoneNumberResult as OperationResult.Success).data)
@@ -121,21 +121,21 @@ class FormatPhoneNumberUseCaseTest {
     }
 
     @Test
-    fun `should format formated RU phone number starting with 8`() {
+    fun `should return already formated RU phone number starting with 8`() {
         val formatPhoneNumberResult = formatPhoneNumberUseCase("8 (123) 456-78-90")
         assertTrue(formatPhoneNumberResult is OperationResult.Success)
         assertEquals("+7 (123) 456-78-90", (formatPhoneNumberResult as OperationResult.Success).data)
     }
 
     @Test
-    fun `should format formated RU phone number starting with 7`() {
+    fun `should return already formated RU phone number starting with 7`() {
         val formatPhoneNumberResult = formatPhoneNumberUseCase("7 (123) 456-78-90")
         assertTrue(formatPhoneNumberResult is OperationResult.Success)
         assertEquals("+7 (123) 456-78-90", (formatPhoneNumberResult as OperationResult.Success).data)
     }
 
     @Test
-    fun `should format formated RU phone number with plus`() {
+    fun `should return already formated RU phone number with plus`() {
         val formatPhoneNumberResult = formatPhoneNumberUseCase("+7 (123) 456-78-90")
         assertTrue(formatPhoneNumberResult is OperationResult.Success)
         assertEquals("+7 (123) 456-78-90", (formatPhoneNumberResult as OperationResult.Success).data)
@@ -163,37 +163,51 @@ class FormatPhoneNumberUseCaseTest {
     }
 
     @Test
-    fun `should return error on too short phone number`() {
+    fun `should format spaced international phone number`() {
+        val formatPhoneNumberResult = formatPhoneNumberUseCase("420 123 456 78 90")
+        assertTrue(formatPhoneNumberResult is OperationResult.Success)
+        assertEquals("+420 (123) 456-78-90", (formatPhoneNumberResult as OperationResult.Success).data)
+    }
+
+    @Test
+    fun `should format spaced international phone number with plus`() {
+        val formatPhoneNumberResult = formatPhoneNumberUseCase("+420 123 456 78 90")
+        assertTrue(formatPhoneNumberResult is OperationResult.Success)
+        assertEquals("+420 (123) 456-78-90", (formatPhoneNumberResult as OperationResult.Success).data)
+    }
+
+    @Test
+    fun `should return already formated international phone number`() {
+        val formatPhoneNumberResult = formatPhoneNumberUseCase("420 (123) 456-78-90")
+        assertTrue(formatPhoneNumberResult is OperationResult.Success)
+        assertEquals("+420 (123) 456-78-90", (formatPhoneNumberResult as OperationResult.Success).data)
+    }
+
+    @Test
+    fun `should return already formated international phone number with plus`() {
+        val formatPhoneNumberResult = formatPhoneNumberUseCase("+420 (123) 456-78-90")
+        assertTrue(formatPhoneNumberResult is OperationResult.Success)
+        assertEquals("+420 (123) 456-78-90", (formatPhoneNumberResult as OperationResult.Success).data)
+    }
+
+    @Test
+    fun `should format bad formated international phone number with plus`() {
+        val formatPhoneNumberResult = formatPhoneNumberUseCase("+42(0123456-78 90")
+        assertTrue(formatPhoneNumberResult is OperationResult.Success)
+        assertEquals("+420 (123) 456-78-90", (formatPhoneNumberResult as OperationResult.Success).data)
+    }
+
+    @Test
+    fun `should return short phone number`() {
         val formatPhoneNumberResult = formatPhoneNumberUseCase("12345")
-        assertTrue(formatPhoneNumberResult is OperationResult.Error)
-        assertEquals("Phone number must have minimum 10 digits", (formatPhoneNumberResult as OperationResult.Error).error)
-    }
-
-    @Test
-    fun `should return error on invalid RU phone number length starting with 8`() {
-        val formatPhoneNumberResult = formatPhoneNumberUseCase("8123456789")
-        assertTrue(formatPhoneNumberResult is OperationResult.Error)
-        assertEquals("Invalid phone number format", (formatPhoneNumberResult as OperationResult.Error).error)
-    }
-
-    @Test
-    fun `should return error on invalid RU phone number length starting with 7`() {
-        val formatPhoneNumberResult = formatPhoneNumberUseCase("7123456789")
-        assertTrue(formatPhoneNumberResult is OperationResult.Error)
-        assertEquals("Invalid phone number format", (formatPhoneNumberResult as OperationResult.Error).error)
-    }
-
-    @Test
-    fun `should return error on invalid RU phone number length starting with plus`() {
-        val formatPhoneNumberResult = formatPhoneNumberUseCase("+7123456789")
-        assertTrue(formatPhoneNumberResult is OperationResult.Error)
-        assertEquals("Invalid phone number format", (formatPhoneNumberResult as OperationResult.Error).error)
+        assertTrue(formatPhoneNumberResult is OperationResult.Success)
+        assertEquals("12345", (formatPhoneNumberResult as OperationResult.Success).data)
     }
 
     @Test
     fun `should return error on completely invalid input`() {
         val formatPhoneNumberResult = formatPhoneNumberUseCase("abcde")
         assertTrue(formatPhoneNumberResult is OperationResult.Error)
-        assertEquals("Phone number must have minimum 10 digits", (formatPhoneNumberResult as OperationResult.Error).error)
+        assertEquals("Invalid phone number", (formatPhoneNumberResult as OperationResult.Error).error)
     }
 }
