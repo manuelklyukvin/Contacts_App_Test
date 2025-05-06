@@ -1,8 +1,8 @@
 import manuelklyukvin.contacts_app.build_src.configs.GradleNamespaces
 import manuelklyukvin.contacts_app.build_src.configs.GradleVersions
 import manuelklyukvin.contacts_app.build_src.dependencies.koin
-import manuelklyukvin.contacts_app.build_src.modules.coreData
 import manuelklyukvin.contacts_app.build_src.modules.coreDomain
+import manuelklyukvin.contacts_app.build_src.modules.coreInfrastructure
 import manuelklyukvin.contacts_app.build_src.modules.corePresentation
 
 plugins {
@@ -28,5 +28,5 @@ dependencies {
 
     corePresentation()
     coreDomain()
-    coreData()
+    coreInfrastructure()
 }

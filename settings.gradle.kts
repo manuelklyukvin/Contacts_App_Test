@@ -1,19 +1,32 @@
 rootProject.name = "Contacts App"
 
-include(":app")
+val app = ":app"
+val core = ":core"
+val features = ":features"
+
+val main = "$features:main"
+
+include(app)
 include(
-    ":core",
-    ":core:presentation",
-    ":core:domain",
-    ":core:data",
-    ":core:di"
+    core,
+    presentationModule(core),
+    domainModule(core),
+    infrastructureModule(core),
+    diModule(core)
 )
-include(":features")
+include(features)
 
 include(
-    ":features:main",
-    ":features:main:presentation",
-    ":features:main:domain",
-    ":features:main:data",
-    ":features:main:di"
+    main,
+    presentationModule(main),
+    domainModule(main),
+    dataModule(main),
+    infrastructureModule(main),
+    diModule(main)
 )
+
+fun presentationModule(module: String) = "$module:presentation"
+fun domainModule(module: String) = "$module:domain"
+fun dataModule(module: String) = "$module:data"
+fun infrastructureModule(module: String) = "$module:infrastructure"
+fun diModule(module: String) = "$module:di"

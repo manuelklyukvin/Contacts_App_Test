@@ -11,9 +11,11 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import manuelklyukvin.contacts_app.core.utils.operations.models.OperationResult
-import manuelklyukvin.contacts_app.main.models.DomainContact
-import manuelklyukvin.contacts_app.main.models.DomainRawContact
-import manuelklyukvin.contacts_app.main.repositories.RawContactRepository
+import manuelklyukvin.contacts_app.main.contacts.models.DomainContact
+import manuelklyukvin.contacts_app.main.contacts.models.DomainRawContact
+import manuelklyukvin.contacts_app.main.contacts.repositories.RawContactRepository
+import manuelklyukvin.contacts_app.main.contacts.use_cases.GetContactsUseCase
+import manuelklyukvin.contacts_app.main.phone.use_cases.FormatPhoneNumberUseCase
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

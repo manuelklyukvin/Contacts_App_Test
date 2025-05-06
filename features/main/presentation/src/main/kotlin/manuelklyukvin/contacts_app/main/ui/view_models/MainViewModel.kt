@@ -6,11 +6,11 @@ import kotlinx.coroutines.launch
 import manuelklyukvin.contacts_app.core.ui.view_models.CoreViewModel
 import manuelklyukvin.contacts_app.core.ui.view_models.models.CoreViewState
 import manuelklyukvin.contacts_app.core.utils.operations.models.OperationResult
+import manuelklyukvin.contacts_app.main.contacts.use_cases.GetContactGroupsUseCase
 import manuelklyukvin.contacts_app.main.models.toPresentation
+import manuelklyukvin.contacts_app.main.phone.use_cases.MakeCallUseCase
 import manuelklyukvin.contacts_app.main.ui.view_models.models.MainIntent
 import manuelklyukvin.contacts_app.main.ui.view_models.models.MainState
-import manuelklyukvin.contacts_app.main.use_cases.GetContactGroupsUseCase
-import manuelklyukvin.contacts_app.main.use_cases.MakeCallUseCase
 
 class MainViewModel(
     private val getContactGroupsUseCase: GetContactGroupsUseCase,

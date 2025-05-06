@@ -11,7 +11,9 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import manuelklyukvin.contacts_app.core.utils.logger.models.Logger
 import manuelklyukvin.contacts_app.core.utils.operations.models.OperationResult
-import manuelklyukvin.contacts_app.main.models.DomainContact
+import manuelklyukvin.contacts_app.main.contacts.models.DomainContact
+import manuelklyukvin.contacts_app.main.contacts.use_cases.GetContactGroupsUseCase
+import manuelklyukvin.contacts_app.main.contacts.use_cases.GetContactsUseCase
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -92,7 +94,7 @@ class GetContactGroupsUseCaseTest {
     }
 
     @Test
-    fun `should handle empty contact names`() = runTest {
+    fun `should skip empty contact names`() = runTest {
         val contacts = listOf(
             DomainContact(null, "", "111"),
             DomainContact(null, "   ", "222"),
@@ -105,13 +107,10 @@ class GetContactGroupsUseCaseTest {
         assertTrue(getContactGroupsResult is OperationResult.Success)
         val contactGroups = getContactGroupsResult.data
 
-        assertEquals(2, contactGroups.size)
+        assertEquals(1, contactGroups.size)
 
         assertEquals('A', contactGroups[0].header)
         assertEquals(listOf("Alice"), contactGroups[0].contacts.map { it.name })
-
-        assertEquals('#', contactGroups[1].header)
-        assertEquals(2, contactGroups[1].contacts.size)
     }
 
     @Test

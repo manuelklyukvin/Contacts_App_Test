@@ -2,6 +2,7 @@ import manuelklyukvin.contacts_app.build_src.configs.GradleNamespaces
 import manuelklyukvin.contacts_app.build_src.gradle_plugins.DiGradlePlugin
 import manuelklyukvin.contacts_app.build_src.modules.mainData
 import manuelklyukvin.contacts_app.build_src.modules.mainDomain
+import manuelklyukvin.contacts_app.build_src.modules.mainInfrastructure
 import manuelklyukvin.contacts_app.build_src.modules.mainPresentation
 
 apply<DiGradlePlugin>()
@@ -19,4 +20,5 @@ dependencies {
     mainPresentation()
     mainDomain()
     mainData()
+    mainInfrastructure()
 }

@@ -1,7 +1,0 @@
-package manuelklyukvin.contacts_app.main.models
-
-data class DomainContact(
-    val photoUri: String?,
-    val name: String,
-    val phoneNumber: String
-)
