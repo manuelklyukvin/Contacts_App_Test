@@ -138,6 +138,7 @@ private fun ContentMainScreenPreview() {
                             header = 'N',
                             contacts = List(3) {
                                 PresentationContact(
+                                    id = 0,
                                     photoUri = null,
                                     name = "Name",
                                     phoneNumber = "+7 (900) 000-00-00"

@@ -2,7 +2,7 @@ package manuelklyukvin.contacts_app.core.utils.logger.models
 
 import android.util.Log
 
-class AndroidLoggerImpl : Logger() {
+class LoggerImpl : Logger() {
     override fun debug(message: String?, throwable: Throwable?) {
         Log.d(TAG, message, throwable)
     }

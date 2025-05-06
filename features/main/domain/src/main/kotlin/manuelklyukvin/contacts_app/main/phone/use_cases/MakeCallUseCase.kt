@@ -13,16 +13,10 @@ class MakeCallUseCase(
         phoneAdapter.makeCall(phoneNumber)
         OperationResult.Success(null)
     } catch (e: CancellationException) {
-        logger.error(
-            message = "MakeCallUseCase: Cancellation",
-            throwable = e
-        )
+        logger.error("MakeCallUseCase: Cancellation", e)
         throw e
     } catch (e: Exception) {
-        logger.error(
-            message = "MakeCallUseCase: Error with making call",
-            throwable = e
-        )
+        logger.error("MakeCallUseCase: Error with making call", e)
         OperationResult.Error(e.message)
     }
 }
