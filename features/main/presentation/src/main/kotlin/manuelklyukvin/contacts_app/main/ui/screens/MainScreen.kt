@@ -21,7 +21,7 @@ fun MainScreen(viewModel: MainViewModel = koinViewModel()) {
 
     when (state.viewState) {
         CoreViewState.INITIAL -> Unit
-        CoreViewState.LOADING -> Unit
+        CoreViewState.LOADING -> LoadingMainScreen()
         CoreViewState.CONTENT -> ContentMainScreen(state, onIntent)
         CoreViewState.ERROR -> ErrorScreen(
             error = state.error,

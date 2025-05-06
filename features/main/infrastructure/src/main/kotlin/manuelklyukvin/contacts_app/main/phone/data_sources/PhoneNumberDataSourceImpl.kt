@@ -11,7 +11,7 @@ class PhoneNumberDataSourceImpl(private val context: Context) : PhoneNumberDataS
             ContactsContract.CommonDataKinds.Phone.IS_PRIMARY
         )
         val selection = "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = $contactId"
-        val sortOrder = "${ContactsContract.CommonDataKinds.Phone.IS_PRIMARY} DESC LIMIT 1"
+        val sortOrder = "${ContactsContract.CommonDataKinds.Phone.IS_PRIMARY} DESC"
 
         return context.contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -23,16 +23,14 @@ class PhoneNumberDataSourceImpl(private val context: Context) : PhoneNumberDataS
             val phoneNumberIndex = cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)
             val isPrimaryIndex = cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.IS_PRIMARY)
 
-            when {
-                cursor.moveToFirst() -> {
-                    if (cursor.getInt(isPrimaryIndex) == 1) {
-                        cursor.getStringOrNull(phoneNumberIndex)
-                    } else {
-                        cursor.getStringOrNull(phoneNumberIndex)
-                    }
-                }
-                else -> null
+            while (cursor.moveToNext()) {
+                val isPrimary = cursor.getInt(isPrimaryIndex) == 1
+                val phoneNumber = cursor.getStringOrNull(phoneNumberIndex)
+
+                if (isPrimary) return@use phoneNumber
             }
+
+            if (cursor.moveToFirst()) cursor.getStringOrNull(phoneNumberIndex) else null
         }
     }
 }
