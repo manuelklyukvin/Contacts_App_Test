@@ -22,10 +22,16 @@ class GetContactGroupsUseCase(
             OperationResult.Success(contactGroups)
         }
     } catch (e: CancellationException) {
-        logger.error("GetContactGroupsUseCase", e.message)
+        logger.error(
+            message = "GetContactGroupsUseCase: Cancellation",
+            throwable = e
+        )
         throw e
     } catch (e: Exception) {
-        logger.error("GetContactGroupsUseCase", e.message)
+        logger.error(
+            message = "GetContactGroupsUseCase: Error fetching contacts",
+            throwable = e
+        )
         OperationResult.Error(e.message)
     }
 

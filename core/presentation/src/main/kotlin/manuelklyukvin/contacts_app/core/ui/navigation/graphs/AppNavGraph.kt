@@ -8,7 +8,9 @@ import manuelklyukvin.contacts_app.core.ui.theme.LocalNavigationState
 import manuelklyukvin.contacts_app.core.ui.theme.resources.Animations
 
 @Composable
-fun AppNavGraph(mainScreen: @Composable () -> Unit) {
+fun AppNavGraph(
+    mainScreen: @Composable () -> Unit
+) {
     NavHost(
         navController = LocalNavigationState.current.navController,
         startDestination = Routes.Main,

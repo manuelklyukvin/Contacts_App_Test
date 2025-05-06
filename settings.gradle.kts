@@ -5,6 +5,7 @@ include(
     ":core",
     ":core:presentation",
     ":core:domain",
+    ":core:data",
     ":core:di"
 )
 include(":features")

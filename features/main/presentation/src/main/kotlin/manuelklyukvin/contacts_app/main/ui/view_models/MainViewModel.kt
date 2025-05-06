@@ -10,9 +10,11 @@ import manuelklyukvin.contacts_app.main.models.toPresentation
 import manuelklyukvin.contacts_app.main.ui.view_models.models.MainIntent
 import manuelklyukvin.contacts_app.main.ui.view_models.models.MainState
 import manuelklyukvin.contacts_app.main.use_cases.GetContactGroupsUseCase
+import manuelklyukvin.contacts_app.main.use_cases.MakeCallUseCase
 
 class MainViewModel(
-    private val getContactGroupsUseCase: GetContactGroupsUseCase
+    private val getContactGroupsUseCase: GetContactGroupsUseCase,
+    private val makeCallUseCase: MakeCallUseCase
 ) : CoreViewModel<MainState, MainIntent>(MainState()) {
     private var loadContactGroupsJob: Job? = null
 
@@ -24,7 +26,12 @@ class MainViewModel(
 
     private fun onScreenOpened() = withInitialState { loadContactGroups() }
 
-    private fun onContactClicked(phoneNumber: String) = withContentState { }
+    private fun onContactClicked(phoneNumber: String) = withContentState {
+        val makeCallResult = makeCallUseCase(phoneNumber)
+        if (makeCallResult is OperationResult.Error) {
+            reduce { copy(viewState = CoreViewState.ERROR, error = makeCallResult.error) }
+        }
+    }
 
     private fun onRetryButtonClicked() = withErrorState { loadContactGroups() }
 

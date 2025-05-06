@@ -1,6 +1,7 @@
 package manuelklyukvin.contacts_app.build_src.gradle_plugins
 
 import manuelklyukvin.contacts_app.build_src.configs.GradleVersions
+import manuelklyukvin.contacts_app.build_src.modules.coreData
 import manuelklyukvin.contacts_app.build_src.modules.coreDomain
 import manuelklyukvin.contacts_app.build_src.plugins.Plugins
 import manuelklyukvin.contacts_app.build_src.utils.android
@@ -31,6 +32,7 @@ class DataGradlePlugin : CoreGradlePlugin() {
     override fun applyDependencies(project: Project) {
         project.dependencies.apply {
             coreDomain()
+            coreData()
         }
     }
 }
